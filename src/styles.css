@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, Segoe UI, sans-serif;
+  background: #0a0f16;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(10, 15, 22, 1), rgba(13, 20, 31, 1) 52%, rgba(17, 24, 34, 1)),
+    #0a0f16;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.noise-layer {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 75%);
+}
+
+.panel {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+    rgba(17, 25, 39, 0.92);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+  padding: 1.25rem;
+  backdrop-filter: blur(18px);
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: 1.5rem;
+  }
+}
+
+.field {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(6, 11, 18, 0.72);
+  color: #f8fafc;
+  outline: none;
+  padding: 0.72rem 0.85rem;
+  font-size: 0.92rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+}
+
+.field::placeholder {
+  color: rgba(142, 160, 184, 0.65);
+}
+
+.field:focus {
+  border-color: rgba(245, 184, 75, 0.72);
+  background: rgba(6, 11, 18, 0.94);
+  box-shadow: 0 0 0 3px rgba(245, 184, 75, 0.12);
+}
+
+.field option {
+  background: #111927;
+  color: #f8fafc;
+}
+
+.primary-button,
+.ghost-button,
+.danger-button,
+.tab-button,
+.tab-button-active,
+.icon-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.55rem 0.82rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.primary-button {
+  border-color: rgba(245, 184, 75, 0.35);
+  background: linear-gradient(180deg, #f8c864, #d99124);
+  color: #191004;
+}
+
+.ghost-button,
+.tab-button {
+  border-color: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+}
+
+.danger-button {
+  border-color: rgba(255, 92, 112, 0.23);
+  background: rgba(255, 92, 112, 0.09);
+  color: #ff8b9a;
+}
+
+.tab-button-active {
+  border-color: rgba(245, 184, 75, 0.3);
+  background: rgba(245, 184, 75, 0.12);
+  color: #ffd891;
+}
+
+.icon-button {
+  min-height: 34px;
+  min-width: 34px;
+  padding: 0.45rem;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.primary-button:hover,
+.ghost-button:hover,
+.danger-button:hover,
+.tab-button:hover,
+.tab-button-active:hover,
+.icon-button:hover {
+  transform: translateY(-1px);
+}
+
+.range {
+  width: 100%;
+  accent-color: #f5b84b;
+}
+
+.score-ring {
+  display: grid;
+  width: 120px;
+  height: 120px;
+  flex: 0 0 120px;
+  place-items: center;
+  border-radius: 999px;
+  box-shadow: inset 0 0 20px rgba(245, 184, 75, 0.08);
+}
+
+.score-ring-inner {
+  display: flex;
+  width: 92px;
+  height: 92px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #111927;
+}
+
+.metric-tile {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.16);
+  padding: 0.9rem;
+}
+
+.metric-tile span {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8ea0b8;
+}
+
+.metric-tile strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.35rem;
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
