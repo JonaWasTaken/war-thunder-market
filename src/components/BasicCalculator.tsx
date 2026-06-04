@@ -32,6 +32,14 @@ export const BasicCalculator = ({
   const parsedFeePercent = parseNumericInput(feePercent);
   const calculation = calculateFlip(parsedBuyPrice, parsedSellPrice, parsedFeePercent);
   const tone = getProfitTone(calculation.netProfit, parsedBuyPrice);
+  const statusLabel =
+    tone === "neutral"
+      ? "Enter values"
+      : tone === "profit"
+        ? "Profitable"
+        : tone === "loss"
+          ? "Loss"
+          : "Near break-even";
   const warnings = buildSmartWarnings({
     calculation,
     buyPrice: parsedBuyPrice,
@@ -49,7 +57,7 @@ export const BasicCalculator = ({
       className="lg:col-span-8"
       action={
         <Badge tone={tone === "profit" ? "profit" : tone === "loss" ? "loss" : "caution"}>
-          {tone === "profit" ? "Profitable" : tone === "loss" ? "Loss" : "Near break-even"}
+          {statusLabel}
         </Badge>
       }
     >

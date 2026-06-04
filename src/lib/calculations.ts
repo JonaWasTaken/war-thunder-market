@@ -33,6 +33,11 @@ export const calculateFlip = (
   const safeFeePercent = feePercent ?? NaN;
   const feeRate = safeFeePercent / 100;
   const sellerRate = 1 - feeRate;
+  const hasValidBuyPrice = buyPrice !== null && buyPrice >= 0;
+  const hasValidSellPrice = sellPrice !== null && sellPrice >= 0;
+  const hasValidFee = feePercent !== null && feePercent >= 0 && feePercent < 100;
+  const validBuyPrice = hasValidBuyPrice ? buyPrice : null;
+  const validSellPrice = hasValidSellPrice ? sellPrice : null;
 
   if (buyPrice === null) {
     errors.push("Buy price is required.");
@@ -54,33 +59,29 @@ export const calculateFlip = (
     errors.push("Fee must be below 100%.");
   }
 
-  if (errors.length > 0 || buyPrice === null || sellPrice === null || feePercent === null) {
-    return {
-      isValid: false,
-      errors,
-      feeRate: Number.isFinite(feeRate) ? feeRate : 0,
-      sellerRate: Number.isFinite(sellerRate) ? sellerRate : 0,
-      netReceived: null,
-      netProfit: null,
-      roiPercent: null,
-      breakEvenSellPrice: null,
-    };
-  }
-
-  // Seller receives the sale amount minus the market fee.
-  const netReceived = sellPrice * sellerRate;
-  // Net profit is what remains after recovering the original buy cost.
-  const netProfit = netReceived - buyPrice;
+  const normalizedFeeRate = hasValidFee ? feeRate : 0;
+  const normalizedSellerRate = hasValidFee ? sellerRate : 0;
+  // Seller receives the sale amount minus the market fee. This can be calculated
+  // as soon as sell price and fee are valid, even if buy price is still missing.
+  const netReceived =
+    validSellPrice !== null && hasValidFee ? validSellPrice * normalizedSellerRate : null;
+  // Net profit needs both sides of the trade.
+  const netProfit = netReceived !== null && validBuyPrice !== null ? netReceived - validBuyPrice : null;
   // ROI is undefined for a zero buy price because there is no investment base.
-  const roiPercent = buyPrice > 0 ? (netProfit / buyPrice) * 100 : null;
+  const roiPercent = netProfit !== null && validBuyPrice !== null && validBuyPrice > 0
+    ? (netProfit / validBuyPrice) * 100
+    : null;
   // Break-even is the sell price where received amount equals buy cost.
-  const breakEvenSellPrice = sellerRate > 0 ? buyPrice / sellerRate : null;
+  const breakEvenSellPrice =
+    validBuyPrice !== null && hasValidFee && normalizedSellerRate > 0
+      ? validBuyPrice / normalizedSellerRate
+      : null;
 
   return {
-    isValid: true,
+    isValid: errors.length === 0,
     errors,
-    feeRate,
-    sellerRate,
+    feeRate: normalizedFeeRate,
+    sellerRate: normalizedSellerRate,
     netReceived,
     netProfit,
     roiPercent,
