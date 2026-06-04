@@ -1,10 +1,10 @@
 import type { FlipItem, Settings } from "../types";
 
-const SETTINGS_KEY = "gaijin-flip-settings:v1";
+const SETTINGS_KEY = "gaijin-flip-settings:v2";
 const ITEMS_KEY = "gaijin-flip-items:v1";
 
 export const DEFAULT_SETTINGS: Settings = {
-  defaultFeePercent: 20,
+  defaultFeePercent: 15,
   currencyLabel: "GJN",
   decimals: 2,
 };
@@ -39,7 +39,14 @@ export const saveSettings = (settings: Settings) => {
   safeWrite(SETTINGS_KEY, settings);
 };
 
-export const loadItems = () => safeRead<FlipItem[]>(ITEMS_KEY);
+export const loadItems = () => {
+  const savedItems = safeRead<FlipItem[]>(ITEMS_KEY);
+  return savedItems?.map((item) =>
+    item.itemName.startsWith("Example ") && item.feePercent === 20
+      ? { ...item, feePercent: 15 }
+      : item,
+  );
+};
 
 export const saveItems = (items: FlipItem[]) => {
   safeWrite(ITEMS_KEY, items);

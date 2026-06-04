@@ -22,7 +22,17 @@ export const createId = () => {
 };
 
 export const sanitizeFeePercent = (feePercent: number) =>
-  Number.isFinite(feePercent) ? feePercent : 20;
+  Number.isFinite(feePercent) ? feePercent : 15;
+
+const roundPayoutDown = (value: number, decimals: 2 | 3 = 2) => {
+  const multiplier = 10 ** decimals;
+  return Math.floor((value + Number.EPSILON) * multiplier) / multiplier;
+};
+
+const roundRequiredSellUp = (value: number, decimals: 2 | 3 = 2) => {
+  const multiplier = 10 ** decimals;
+  return Math.ceil((value - Number.EPSILON) * multiplier) / multiplier;
+};
 
 export const calculateFlip = (
   buyPrice: number | null,
@@ -64,7 +74,9 @@ export const calculateFlip = (
   // Seller receives the sale amount minus the market fee. This can be calculated
   // as soon as sell price and fee are valid, even if buy price is still missing.
   const netReceived =
-    validSellPrice !== null && hasValidFee ? validSellPrice * normalizedSellerRate : null;
+    validSellPrice !== null && hasValidFee
+      ? roundPayoutDown(validSellPrice * normalizedSellerRate)
+      : null;
   // Net profit needs both sides of the trade.
   const netProfit = netReceived !== null && validBuyPrice !== null ? netReceived - validBuyPrice : null;
   // ROI is undefined for a zero buy price because there is no investment base.
@@ -74,7 +86,7 @@ export const calculateFlip = (
   // Break-even is the sell price where received amount equals buy cost.
   const breakEvenSellPrice =
     validBuyPrice !== null && hasValidFee && normalizedSellerRate > 0
-      ? validBuyPrice / normalizedSellerRate
+      ? roundRequiredSellUp(validBuyPrice / normalizedSellerRate)
       : null;
 
   return {
@@ -107,7 +119,8 @@ export const calculateRequiredSellForProfit = (
 
   const sellerRate = 1 - feePercent / 100;
   // Required sell = (original cost + desired profit) / seller rate after fee.
-  return (buyPrice + targetProfit) / sellerRate;
+  // Round up because payouts are rounded down to displayed cents.
+  return roundRequiredSellUp((buyPrice + targetProfit) / sellerRate);
 };
 
 export const calculateRequiredSellForRoi = (
@@ -128,7 +141,8 @@ export const calculateRequiredSellForRoi = (
 
   const sellerRate = 1 - feePercent / 100;
   // Required sell = buy price * desired growth / seller rate after fee.
-  return (buyPrice * (1 + targetRoiPercent / 100)) / sellerRate;
+  // Round up because payouts are rounded down to displayed cents.
+  return roundRequiredSellUp((buyPrice * (1 + targetRoiPercent / 100)) / sellerRate);
 };
 
 export const calculateFlipScore = ({

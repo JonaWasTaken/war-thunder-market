@@ -32,7 +32,7 @@ export const SettingsPanel = ({
           <SettingsIcon size={20} />
         </div>
         <p className="text-sm leading-6 text-slate-300">
-          Default fee starts at 20%, but you can change it for your own calculator setup.
+          Default fee starts at 15%, but you can change it for your own calculator setup.
         </p>
       </div>
 

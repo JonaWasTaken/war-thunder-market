@@ -142,8 +142,9 @@ export const BasicCalculator = ({
             Formula check
           </div>
           <p className="mt-2 text-sm leading-6 text-slate-300">
-            Seller receives <strong>sell price x (1 - fee)</strong>. With a 20% fee, the
-            seller rate is 80%, so break-even is <strong>buy price / 0.8</strong>.
+            Seller receives <strong>sell price x (1 - fee)</strong>, rounded down to the
+            displayed cents. With a 15% fee, <strong>5.30</strong> pays about{" "}
+            <strong>4.50</strong>.
           </p>
         </div>
         <div className="rounded-lg border border-white/8 bg-white/[0.035] p-4">
